@@ -12,6 +12,35 @@ class MoviesController < ApplicationController
 
   def index
     @movies = Movie.all
+    
+    #initialize sort
+    @sort ||= 'id'
+    
+    # retrieve how to sort from URI route
+    @sort = params[:sort_by]
+    
+    # setup sessions in order to sort them
+    # the default sort is by id
+    # (the value of sort within session is 'id')
+    # session[:sort_by] ||= 'id'
+    
+    # get the sort variable according to click
+    # in index view define session[sort] to be title (if clicked)
+    # and session[sort] = date (if clicked) 
+    if @sort == "title"
+      @title_hilite = "hilite"
+    elsif @sort == "release_date"
+      @date_hilite = "hilite"
+    end
+    
+    
+    # sort them; the list of movies in @movies will be ordered
+    # according to the sort variable
+    @movies = Movie.order(@sort)
+    
+    
+    
+    
   end
 
   def new
