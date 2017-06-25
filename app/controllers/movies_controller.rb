@@ -19,7 +19,7 @@ class MoviesController < ApplicationController
     # set up the sessions to keep track of
     # which sort and which ratings are desired
     session[:sort_by] ||= 'id'
-    session[:ratings] = Hash[@all_ratings.map {|rating| [rating,1]}]
+    session[:ratings] ||= Hash[@all_ratings.map {|rating| [rating,1]}]
     
     # get the ratings which were checked 
     # :ratings is a params passed
