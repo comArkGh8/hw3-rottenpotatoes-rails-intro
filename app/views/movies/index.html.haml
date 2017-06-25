@@ -2,12 +2,12 @@
 %h2 All Movies
 
 -# copied from hw instructions
-= form_tag movies_path, method: :get do
+= form_tag movies_path, method: :get, id: 'ratings_form' do
   Include:
   - @all_ratings.each do |rating|
     = rating
-    =check_box_tag "ratings[#{rating}]", 1, @ratings_desired.include?(rating), id: 'ratings_form'
-  = submit_tag 'Refresh'
+    =check_box_tag "ratings[#{rating}]", 1, @ratings_desired.include?(rating), id: 'ratings_#{rating}'
+  = submit_tag 'Refresh', id: 'ratings_submit'
 
 -# in here need to add links to movies and release date
 -# th{class: } refers to setting the highlight in the column clicked on
