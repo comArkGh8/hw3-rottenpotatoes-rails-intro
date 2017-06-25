@@ -19,17 +19,17 @@ class MoviesController < ApplicationController
     # set up the sessions to keep track of
     # which sort and which ratings are desired
     session[:sort_by] ||= 'id'
-    session[:ratings] ||= @all_ratings
+    session[:ratings] = Hash[@all_ratings.map {|rating| [rating,1]}]
     
     # get the ratings which were checked 
     # :ratings is a params passed
     # and params[:ratings] is a hash with map rating checked => 1
     if params[:ratings].nil?
-      @ratings_desired = session[:ratings]
+      @ratings_desired = session[:ratings].keys
     else 
       @ratings_desired = params[:ratings].keys
       # store the info for the next time
-      session[:ratings] = params[:ratings].keys
+      session[:ratings] = params[:ratings]
     end
     
     # retrieve how to sort from URI route
@@ -39,6 +39,16 @@ class MoviesController < ApplicationController
       @sort = params[:sort_by]
       # and keep in the session for next time
       session[:sort_by] = params[:sort_by]
+    end
+    
+    # from hw instructions
+    # the RESTful thing to do (in case of lacking parameters from
+    # incoming URI) is to do a redirect with params
+    # filled by the session values
+    if params[:sort_by].nil? || params[:ratings].nil?
+      flash.keep
+      # see rake routes (movies path is controlled by index)
+      redirect_to movies_path(ratings: session[:ratings], sort_by: session[:sort_by])
     end
     
     
