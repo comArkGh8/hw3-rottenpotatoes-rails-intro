@@ -13,14 +13,34 @@ class MoviesController < ApplicationController
   def index
     @movies = Movie.all
     
-    #set the all ratings variable (defined in the hw instructions)
-    @all_ratings = Movie.all_ratings
+    # set the all ratings variable (defined in the hw instructions)
+    @all_ratings = Movie.ratings
     
-    #initialize sort
-    @sort ||= 'id'
+    # set up the sessions to keep track of
+    # which sort and which ratings are desired
+    session[:sort_by] ||= 'id'
+    session[:ratings] ||= @all_ratings
+    
+    # get the ratings which were checked 
+    # :ratings is a params passed
+    # and params[:ratings] is a hash with map rating checked => 1
+    if params[:ratings].nil?
+      @ratings_desired = session[:ratings]
+    else 
+      @ratings_desired = params[:ratings].keys
+      # store the info for the next time
+      session[:ratings] = params[:ratings].keys
+    end
     
     # retrieve how to sort from URI route
-    @sort = params[:sort_by]
+    if params[:sort_by].nil?
+      @sort = session[:sort_by]
+    else 
+      @sort = params[:sort_by]
+      # and keep in the session for next time
+      session[:sort_by] = params[:sort_by]
+    end
+    
     
     # get the sort variable according to click
     # in index view define session[sort] to be title (if clicked)
@@ -34,7 +54,7 @@ class MoviesController < ApplicationController
     
     # sort them; the list of movies in @movies will be ordered
     # according to the sort variable
-    @movies = Movie.order(@sort)
+    @movies = Movie.where(rating: @ratings_desired).order(@sort)
     
   end
 

@@ -6,7 +6,7 @@
   Include:
   - @all_ratings.each do |rating|
     = rating
-    =check_box_tag "ratings[#{rating}]"
+    =check_box_tag "ratings[#{rating}]", 1, @ratings_desired.include?(rating), id: 'ratings_boxes'
   = submit_tag 'Refresh'
 
 -# in here need to add links to movies and release date
